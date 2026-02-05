@@ -5,12 +5,16 @@ import { Route, Switch } from "wouter";
 import ErrorBoundary from "./components/ErrorBoundary";
 import { ThemeProvider } from "./contexts/ThemeContext";
 import Home from "./pages/Home";
+import AdminDashboard from "./pages/AdminDashboard";
+import KIAgentProfiles from "./pages/KIAgentProfiles";
 
 
 function Router() {
   return (
     <Switch>
       <Route path={"/"} component={Home} />
+      <Route path={"/admin"} component={AdminDashboard} />
+      <Route path={"/ki-directors"} component={KIAgentProfiles} />
       <Route path={"/404"} component={NotFound} />
       {/* Final fallback route */}
       <Route component={NotFound} />

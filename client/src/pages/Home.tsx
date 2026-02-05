@@ -33,6 +33,8 @@ export default function Home() {
             <a href="#tcs" className="text-sm hover:text-cyan-400 transition">TCS</a>
             <a href="#features" className="text-sm hover:text-cyan-400 transition">Features</a>
             <a href="#governance" className="text-sm hover:text-cyan-400 transition">Governance</a>
+            <a href="/ki-directors" className="text-sm hover:text-cyan-400 transition">KI Direktoren</a>
+            <a href="/admin" className="text-sm hover:text-magenta-500 transition font-bold">Admin</a>
             <a href="#contact" className="text-sm hover:text-cyan-400 transition">Kontakt</a>
           </div>
         </div>
