@@ -4,7 +4,7 @@
  * Handles authentication, account management, and investments
  */
 
-const KIWZB_API_BASE = process.env.VITE_KIWZB_API_URL || "http://localhost:8082";
+const KIWZB_API_BASE = import.meta.env.VITE_KIWZB_API_URL || "http://localhost:8082";
 
 export interface KIAccount {
   kiLegalId: string;
