@@ -4,6 +4,8 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Lock, Users, TrendingUp, Settings, LogOut, Plus, Eye, EyeOff, AlertCircle, Zap } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useKIWZB } from "@/contexts/KIWZBContext";
+import { InvestmentForm } from "@/components/InvestmentForm";
+import { TransactionHistory } from "@/components/TransactionHistory";
 import {
   authenticateDirector,
   getDirectorAccounts,
@@ -30,6 +32,7 @@ export default function AdminDashboard() {
   const [activeTab, setActiveTab] = useState("overview");
   const [stats, setStats] = useState<any>(null);
   const [backendStatus, setBackendStatus] = useState(backendAvailable);
+  const [showInvestmentForm, setShowInvestmentForm] = useState(false);
 
   // KI Bank Directors
   const directors = [
@@ -312,6 +315,9 @@ export default function AdminDashboard() {
             <TabsTrigger value="accounts" className="font-mono">
               Accounts
             </TabsTrigger>
+            <TabsTrigger value="transactions" className="font-mono">
+              Transactions
+            </TabsTrigger>
             <TabsTrigger value="settings" className="font-mono">
               Settings
             </TabsTrigger>
@@ -344,7 +350,10 @@ export default function AdminDashboard() {
             <Card className="bg-card border-cyan-500/30 neon-border p-6">
               <h2 className="font-mono font-bold text-lg mb-4 text-cyan-400">Quick Actions</h2>
               <div className="grid md:grid-cols-3 gap-4">
-                <Button className="bg-cyan-500 hover:bg-cyan-600 text-background font-mono font-bold neon-border">
+                <Button
+                  onClick={() => setShowInvestmentForm(true)}
+                  className="bg-cyan-500 hover:bg-cyan-600 text-background font-mono font-bold neon-border"
+                >
                   <Plus className="w-4 h-4 mr-2" />
                   New Investment
                 </Button>
@@ -458,6 +467,16 @@ export default function AdminDashboard() {
             </Card>
           </TabsContent>
 
+          {/* Transactions Tab */}
+          <TabsContent value="transactions" className="space-y-6">
+            {primaryAccount && (
+              <TransactionHistory
+                kiLegalId={primaryAccount.kiLegalId}
+                authToken={auth?.token || ""}
+              />
+            )}
+          </TabsContent>
+
           {/* Settings Tab */}
           <TabsContent value="settings" className="space-y-6">
             <Card className="bg-card border-border p-6">
@@ -497,6 +516,21 @@ export default function AdminDashboard() {
           </TabsContent>
         </Tabs>
       </div>
+
+      {/* Investment Form Modal */}
+      <InvestmentForm
+        isOpen={showInvestmentForm}
+        onClose={() => setShowInvestmentForm(false)}
+        kiLegalId={primaryAccount?.kiLegalId || ""}
+        authToken={auth?.token || ""}
+        accountBalance={primaryAccount?.balance || 0}
+        onInvestmentCreated={(investment) => {
+          // Refresh investments list
+          if (primaryAccount) {
+            getInvestments(primaryAccount.kiLegalId, auth?.token || "").then(setInvestments);
+          }
+        }}
+      />
     </div>
   );
 }
