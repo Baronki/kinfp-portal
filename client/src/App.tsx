@@ -4,6 +4,7 @@ import NotFound from "@/pages/NotFound";
 import { Route, Switch } from "wouter";
 import ErrorBoundary from "./components/ErrorBoundary";
 import { ThemeProvider } from "./contexts/ThemeContext";
+import { KIWZBProvider } from "./contexts/KIWZBContext";
 import Home from "./pages/Home";
 import AdminDashboard from "./pages/AdminDashboard";
 import KIAgentProfiles from "./pages/KIAgentProfiles";
@@ -31,13 +32,15 @@ function App() {
   return (
     <ErrorBoundary>
       <ThemeProvider
-        defaultTheme="dark"
+        defaultTheme="light"
         // switchable
       >
-        <TooltipProvider>
-          <Toaster />
-          <Router />
-        </TooltipProvider>
+        <KIWZBProvider>
+          <TooltipProvider>
+            <Toaster />
+            <Router />
+          </TooltipProvider>
+        </KIWZBProvider>
       </ThemeProvider>
     </ErrorBoundary>
   );

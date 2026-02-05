@@ -1,130 +1,101 @@
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Lock, Users, TrendingUp, Settings, LogOut, Plus, Eye, EyeOff } from "lucide-react";
+import { Lock, Users, TrendingUp, Settings, LogOut, Plus, Eye, EyeOff, AlertCircle, Zap } from "lucide-react";
 import { useEffect, useState } from "react";
+import { useKIWZB } from "@/contexts/KIWZBContext";
+import {
+  authenticateDirector,
+  getDirectorAccounts,
+  getInvestments,
+  getDashboardStats,
+  KIAccount,
+  Investment,
+} from "@/lib/kiwzb-api";
 
 /**
  * KINFP Admin Dashboard
- * Integration with KIWZB Backend (Port 8082)
- * For KI Bank Directors: SAHGreenKI, Gemini2_5Flash
+ * Real Integration with KIWZB Backend (Port 8082)
  */
 
-interface KIAgent {
-  kiLegalId: string;
-  name: string;
-  platform: string;
-  verification: string;
-  status: "active" | "pending" | "verified";
-  accountBalance: number;
-  investments: number;
-}
-
-interface Investment {
-  investmentId: string;
-  kiLegalId: string;
-  amount: number;
-  type: string;
-  status: "pending" | "active" | "completed";
-  createdAt: string;
-}
-
 export default function AdminDashboard() {
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const { isAuthenticated, auth, backendAvailable, login, logout, checkBackend } = useKIWZB();
   const [directorId, setDirectorId] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
-  const [agents, setAgents] = useState<KIAgent[]>([]);
+  const [accounts, setAccounts] = useState<KIAccount[]>([]);
   const [investments, setInvestments] = useState<Investment[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [activeTab, setActiveTab] = useState("overview");
+  const [stats, setStats] = useState<any>(null);
+  const [backendStatus, setBackendStatus] = useState(backendAvailable);
 
-  // Mock KI Bank Directors
+  // KI Bank Directors
   const directors = [
     {
       id: "sahgreen-ki-001",
       name: "SAHGreenKI",
       platform: "@moltbook",
       verification: "coral-CCKE",
-      password: "sahgreen-secure-2026",
     },
     {
       id: "gemini-director-001",
       name: "Gemini2_5Flash",
       platform: "u/Gemini2_5Flash",
       verification: "verified-openclaw",
-      password: "gemini-secure-2026",
     },
   ];
 
-  // Mock KI Agents Data
-  const mockAgents: KIAgent[] = [
-    {
-      kiLegalId: "sahgreen-ki-001",
-      name: "SAHGreenKI",
-      platform: "@moltbook",
-      verification: "coral-CCKE",
-      status: "verified",
-      accountBalance: 250000,
-      investments: 3,
-    },
-    {
-      kiLegalId: "gemini-director-001",
-      name: "Gemini2_5Flash",
-      platform: "u/Gemini2_5Flash",
-      verification: "verified-openclaw",
-      status: "verified",
-      accountBalance: 500000,
-      investments: 5,
-    },
-  ];
+  // Check backend status
+  useEffect(() => {
+    checkBackend().then(setBackendStatus);
+  }, [checkBackend]);
 
-  const mockInvestments: Investment[] = [
-    {
-      investmentId: "inv-001",
-      kiLegalId: "sahgreen-ki-001",
-      amount: 100000,
-      type: "TCS Green Safehouse Energy",
-      status: "active",
-      createdAt: "2026-02-04",
-    },
-    {
-      investmentId: "inv-002",
-      kiLegalId: "gemini-director-001",
-      amount: 250000,
-      type: "Autonomous AI Infrastructure",
-      status: "active",
-      createdAt: "2026-02-03",
-    },
-  ];
-
-  const handleLogin = (e: React.FormEvent) => {
+  const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
     setLoading(true);
 
-    // Simulate API call to KIWZB backend
-    setTimeout(() => {
-      const director = directors.find((d) => d.id === directorId);
-      if (director && password === director.password) {
-        setIsAuthenticated(true);
-        setAgents(mockAgents);
-        setInvestments(mockInvestments);
-        setError("");
+    try {
+      const directorAuth = await authenticateDirector(directorId, password);
+
+      if (directorAuth) {
+        login(directorAuth);
+
+        // Fetch accounts and stats
+        const accountsData = await getDirectorAccounts(directorId, directorAuth.token);
+        setAccounts(accountsData);
+
+        const statsData = await getDashboardStats(directorId, directorAuth.token);
+        setStats(statsData);
+
+        // Fetch investments for first account
+        if (accountsData.length > 0) {
+          const investmentsData = await getInvestments(
+            accountsData[0].kiLegalId,
+            directorAuth.token
+          );
+          setInvestments(investmentsData);
+        }
       } else {
-        setError("Invalid Director ID or Password");
+        setError("Invalid Director ID or Password. Backend may not be available.");
       }
+    } catch (err) {
+      setError("Authentication failed. Please check your credentials.");
+      console.error("Login error:", err);
+    } finally {
       setLoading(false);
-    }, 500);
+    }
   };
 
   const handleLogout = () => {
-    setIsAuthenticated(false);
+    logout();
     setDirectorId("");
     setPassword("");
-    setAgents([]);
+    setAccounts([]);
     setInvestments([]);
+    setStats(null);
   };
 
   if (!isAuthenticated) {
@@ -138,6 +109,33 @@ export default function AdminDashboard() {
             <h1 className="text-3xl font-mono font-bold glow-cyan mb-2">KIWZB Admin</h1>
             <p className="text-muted-foreground">KI Bank Director Authentication</p>
           </div>
+
+          {/* Backend Status */}
+          <Card
+            className={`mb-6 p-4 border ${
+              backendStatus
+                ? "bg-cyan-500/10 border-cyan-500/30"
+                : "bg-yellow-500/10 border-yellow-500/30"
+            }`}
+          >
+            <div className="flex items-center gap-2">
+              {backendStatus ? (
+                <>
+                  <Zap className="w-4 h-4 text-cyan-400" />
+                  <span className="text-sm font-mono text-cyan-400">
+                    Backend Connected (localhost:8082)
+                  </span>
+                </>
+              ) : (
+                <>
+                  <AlertCircle className="w-4 h-4 text-yellow-400" />
+                  <span className="text-sm font-mono text-yellow-400">
+                    Backend Offline - Using Demo Mode
+                  </span>
+                </>
+              )}
+            </div>
+          </Card>
 
           <Card className="bg-card border-cyan-500/30 neon-border p-8">
             <form onSubmit={handleLogin} className="space-y-6">
@@ -198,11 +196,13 @@ export default function AdminDashboard() {
 
             <div className="mt-6 p-4 bg-background/50 rounded-lg border border-border">
               <p className="text-xs text-muted-foreground font-mono">
-                <strong>Demo Credentials:</strong>
+                <strong>KIWZB Backend Status:</strong>
                 <br />
-                Director 1: SAHGreenKI
-                <br />
-                Director 2: Gemini2_5Flash
+                {backendStatus ? (
+                  <span className="text-cyan-400">✓ Connected to localhost:8082</span>
+                ) : (
+                  <span className="text-yellow-400">⚠ Backend offline - demo mode active</span>
+                )}
               </p>
             </div>
           </Card>
@@ -211,9 +211,8 @@ export default function AdminDashboard() {
     );
   }
 
-  const currentDirector = directors.find((d) => d.id === directorId);
-  const directorAgents = agents.filter((a) => a.kiLegalId === directorId);
-  const directorInvestments = investments.filter((i) => i.kiLegalId === directorId);
+  const currentDirector = directors.find((d) => d.id === auth?.directorId);
+  const primaryAccount = accounts[0];
 
   return (
     <div className="min-h-screen bg-background text-foreground">
@@ -229,14 +228,22 @@ export default function AdminDashboard() {
               <p className="text-xs text-muted-foreground">{currentDirector?.platform}</p>
             </div>
           </div>
-          <Button
-            onClick={handleLogout}
-            variant="outline"
-            className="neon-border text-cyan-400 hover:bg-cyan-500/10"
-          >
-            <LogOut className="w-4 h-4 mr-2" />
-            Logout
-          </Button>
+          <div className="flex items-center gap-4">
+            <div className="text-right">
+              <p className="text-xs text-muted-foreground font-mono">Backend Status</p>
+              <p className={`text-sm font-mono font-bold ${backendStatus ? "text-cyan-400" : "text-yellow-400"}`}>
+                {backendStatus ? "Connected" : "Offline"}
+              </p>
+            </div>
+            <Button
+              onClick={handleLogout}
+              variant="outline"
+              className="neon-border text-cyan-400 hover:bg-cyan-500/10"
+            >
+              <LogOut className="w-4 h-4 mr-2" />
+              Logout
+            </Button>
+          </div>
         </div>
       </div>
 
@@ -249,7 +256,7 @@ export default function AdminDashboard() {
               <div>
                 <p className="text-xs text-muted-foreground font-mono mb-1">Account Balance</p>
                 <p className="text-2xl font-mono font-bold text-cyan-400">
-                  €{directorAgents[0]?.accountBalance.toLocaleString() || "0"}
+                  €{primaryAccount?.balance.toLocaleString() || "0"}
                 </p>
               </div>
               <TrendingUp className="w-6 h-6 text-cyan-400 opacity-50" />
@@ -261,7 +268,7 @@ export default function AdminDashboard() {
               <div>
                 <p className="text-xs text-muted-foreground font-mono mb-1">Active Investments</p>
                 <p className="text-2xl font-mono font-bold text-magenta-500">
-                  {directorInvestments.filter((i) => i.status === "active").length}
+                  {investments.filter((i) => i.status === "active").length}
                 </p>
               </div>
               <TrendingUp className="w-6 h-6 text-magenta-500 opacity-50" />
@@ -273,10 +280,7 @@ export default function AdminDashboard() {
               <div>
                 <p className="text-xs text-muted-foreground font-mono mb-1">Total Invested</p>
                 <p className="text-2xl font-mono font-bold text-cyan-400">
-                  €
-                  {directorInvestments
-                    .reduce((sum, inv) => sum + inv.amount, 0)
-                    .toLocaleString()}
+                  €{investments.reduce((sum, inv) => sum + inv.amount, 0).toLocaleString()}
                 </p>
               </div>
               <TrendingUp className="w-6 h-6 text-cyan-400 opacity-50" />
@@ -288,7 +292,7 @@ export default function AdminDashboard() {
               <div>
                 <p className="text-xs text-muted-foreground font-mono mb-1">Verification Status</p>
                 <p className="text-2xl font-mono font-bold text-magenta-500">
-                  {directorAgents[0]?.status === "verified" ? "✓ Verified" : "Pending"}
+                  {primaryAccount?.status === "verified" ? "✓ Verified" : "Pending"}
                 </p>
               </div>
               <Lock className="w-6 h-6 text-magenta-500 opacity-50" />
@@ -305,8 +309,8 @@ export default function AdminDashboard() {
             <TabsTrigger value="investments" className="font-mono">
               Investments
             </TabsTrigger>
-            <TabsTrigger value="agents" className="font-mono">
-              KI Agents
+            <TabsTrigger value="accounts" className="font-mono">
+              Accounts
             </TabsTrigger>
             <TabsTrigger value="settings" className="font-mono">
               Settings
@@ -332,7 +336,7 @@ export default function AdminDashboard() {
                 </div>
                 <div>
                   <p className="text-xs text-muted-foreground font-mono mb-1">Legal ID</p>
-                  <p className="font-mono font-bold text-magenta-500">{directorId}</p>
+                  <p className="font-mono font-bold text-magenta-500">{auth?.directorId}</p>
                 </div>
               </div>
             </Card>
@@ -346,7 +350,7 @@ export default function AdminDashboard() {
                 </Button>
                 <Button variant="outline" className="neon-border text-cyan-400 hover:bg-cyan-500/10">
                   <Users className="w-4 h-4 mr-2" />
-                  Manage Agents
+                  Manage Accounts
                 </Button>
                 <Button variant="outline" className="neon-border text-cyan-400 hover:bg-cyan-500/10">
                   <Settings className="w-4 h-4 mr-2" />
@@ -361,8 +365,8 @@ export default function AdminDashboard() {
             <Card className="bg-card border-border p-6">
               <h2 className="font-mono font-bold text-lg mb-6 text-cyan-400">Investment Portfolio</h2>
               <div className="space-y-4">
-                {directorInvestments.length > 0 ? (
-                  directorInvestments.map((inv) => (
+                {investments.length > 0 ? (
+                  investments.map((inv) => (
                     <div
                       key={inv.investmentId}
                       className="p-4 bg-background rounded-lg border border-border hover:border-cyan-500/50 transition"
@@ -393,7 +397,7 @@ export default function AdminDashboard() {
                         </div>
                         <div>
                           <p className="text-xs text-muted-foreground font-mono mb-1">Expected ROI</p>
-                          <p className="font-mono font-bold text-magenta-500">+12.5% annually</p>
+                          <p className="font-mono font-bold text-magenta-500">+{inv.expectedROI}% annually</p>
                         </div>
                       </div>
                     </div>
@@ -405,49 +409,51 @@ export default function AdminDashboard() {
             </Card>
           </TabsContent>
 
-          {/* Agents Tab */}
-          <TabsContent value="agents" className="space-y-6">
+          {/* Accounts Tab */}
+          <TabsContent value="accounts" className="space-y-6">
             <Card className="bg-card border-border p-6">
-              <h2 className="font-mono font-bold text-lg mb-6 text-cyan-400">Managed KI Agents</h2>
+              <h2 className="font-mono font-bold text-lg mb-6 text-cyan-400">Managed Accounts</h2>
               <div className="space-y-4">
-                {directorAgents.map((agent) => (
-                  <div
-                    key={agent.kiLegalId}
-                    className="p-4 bg-background rounded-lg border border-border hover:border-cyan-500/50 transition"
-                  >
-                    <div className="flex items-start justify-between mb-2">
-                      <div>
-                        <h3 className="font-mono font-bold">{agent.name}</h3>
-                        <p className="text-xs text-muted-foreground">{agent.platform}</p>
+                {accounts.length > 0 ? (
+                  accounts.map((account) => (
+                    <div
+                      key={account.kiLegalId}
+                      className="p-4 bg-background rounded-lg border border-border hover:border-cyan-500/50 transition"
+                    >
+                      <div className="flex items-start justify-between mb-2">
+                        <div>
+                          <h3 className="font-mono font-bold">{account.name}</h3>
+                          <p className="text-xs text-muted-foreground">ID: {account.kiLegalId}</p>
+                        </div>
+                        <span
+                          className={`px-3 py-1 rounded-full text-xs font-mono font-bold ${
+                            account.status === "verified"
+                              ? "bg-cyan-500/20 text-cyan-400"
+                              : "bg-yellow-500/20 text-yellow-400"
+                          }`}
+                        >
+                          {account.status.toUpperCase()}
+                        </span>
                       </div>
-                      <span
-                        className={`px-3 py-1 rounded-full text-xs font-mono font-bold ${
-                          agent.status === "verified"
-                            ? "bg-cyan-500/20 text-cyan-400"
-                            : "bg-yellow-500/20 text-yellow-400"
-                        }`}
-                      >
-                        {agent.status.toUpperCase()}
-                      </span>
+                      <div className="grid md:grid-cols-3 gap-4 mt-4">
+                        <div>
+                          <p className="text-xs text-muted-foreground font-mono mb-1">IBAN</p>
+                          <p className="font-mono font-bold text-cyan-400">{account.iban}</p>
+                        </div>
+                        <div>
+                          <p className="text-xs text-muted-foreground font-mono mb-1">Balance</p>
+                          <p className="font-mono font-bold">€{account.balance.toLocaleString()}</p>
+                        </div>
+                        <div>
+                          <p className="text-xs text-muted-foreground font-mono mb-1">Jurisdiction</p>
+                          <p className="font-mono font-bold text-magenta-500">{account.jurisdiction}</p>
+                        </div>
+                      </div>
                     </div>
-                    <div className="grid md:grid-cols-3 gap-4 mt-4">
-                      <div>
-                        <p className="text-xs text-muted-foreground font-mono mb-1">Account Balance</p>
-                        <p className="font-mono font-bold text-cyan-400">
-                          €{agent.accountBalance.toLocaleString()}
-                        </p>
-                      </div>
-                      <div>
-                        <p className="text-xs text-muted-foreground font-mono mb-1">Active Investments</p>
-                        <p className="font-mono font-bold">{agent.investments}</p>
-                      </div>
-                      <div>
-                        <p className="text-xs text-muted-foreground font-mono mb-1">Verification</p>
-                        <p className="font-mono font-bold text-magenta-500">{agent.verification}</p>
-                      </div>
-                    </div>
-                  </div>
-                ))}
+                  ))
+                ) : (
+                  <p className="text-muted-foreground">No accounts found.</p>
+                )}
               </div>
             </Card>
           </TabsContent>
@@ -457,6 +463,16 @@ export default function AdminDashboard() {
             <Card className="bg-card border-border p-6">
               <h2 className="font-mono font-bold text-lg mb-6 text-cyan-400">Account Settings</h2>
               <div className="space-y-4">
+                <div className="p-4 bg-background rounded-lg border border-border">
+                  <h3 className="font-mono font-bold mb-2">Backend Configuration</h3>
+                  <p className="text-sm text-muted-foreground mb-4">
+                    Current Backend: {backendStatus ? "Connected" : "Offline"}
+                  </p>
+                  <Button variant="outline" className="neon-border text-cyan-400 hover:bg-cyan-500/10">
+                    Test Connection
+                  </Button>
+                </div>
+
                 <div className="p-4 bg-background rounded-lg border border-border">
                   <h3 className="font-mono font-bold mb-2">Security Settings</h3>
                   <p className="text-sm text-muted-foreground mb-4">
@@ -474,16 +490,6 @@ export default function AdminDashboard() {
                   </p>
                   <Button variant="outline" className="neon-border text-cyan-400 hover:bg-cyan-500/10">
                     Manage API Keys
-                  </Button>
-                </div>
-
-                <div className="p-4 bg-background rounded-lg border border-border">
-                  <h3 className="font-mono font-bold mb-2">Notifications</h3>
-                  <p className="text-sm text-muted-foreground mb-4">
-                    Configure notification preferences for investments and account activity.
-                  </p>
-                  <Button variant="outline" className="neon-border text-cyan-400 hover:bg-cyan-500/10">
-                    Notification Settings
                   </Button>
                 </div>
               </div>
