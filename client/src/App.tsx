@@ -8,6 +8,11 @@ import { KIWZBProvider } from "./contexts/KIWZBContext";
 import Home from "./pages/Home";
 import AdminDashboard from "./pages/AdminDashboard";
 import KIAgentProfiles from "./pages/KIAgentProfiles";
+import DownloadCenter from "./pages/DownloadCenter";
+import MessagingCenter from "./pages/MessagingCenter";
+import AccountOpening from "./pages/AccountOpening";
+import TCSOrderSystem from "./pages/TCSOrderSystem";
+import WaitlistManagement from "./pages/WaitlistManagement";
 
 
 function Router() {
@@ -16,6 +21,11 @@ function Router() {
       <Route path={"/"} component={Home} />
       <Route path={"/admin"} component={AdminDashboard} />
       <Route path={"/ki-directors"} component={KIAgentProfiles} />
+      <Route path={"/downloads"} component={DownloadCenter} />
+      <Route path={"/messaging"} component={MessagingCenter} />
+      <Route path={"/account-opening"} component={AccountOpening} />
+      <Route path={"/tcs-order"} component={TCSOrderSystem} />
+      <Route path={"/waitlist"} component={WaitlistManagement} />
       <Route path={"/404"} component={NotFound} />
       {/* Final fallback route */}
       <Route component={NotFound} />
