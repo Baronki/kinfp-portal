@@ -1,10 +1,10 @@
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { ArrowRight, Lock, Zap, Globe, Shield } from "lucide-react";
+import { ArrowRight, Lock, Zap, Globe, Shield, Cpu, Battery, Leaf, TrendingUp, Users, Layers } from "lucide-react";
 import { useEffect, useState } from "react";
 
 /**
- * KINFP Portal - Home Page
+ * KINFP Portal - Home Page (Extended with TCS Integration)
  * Design: Quantum Autonomy (Cyberpunk + Futuristic)
  * Color Palette: Deep Black (#0a0e27), Cyan (#00d9ff), Magenta (#ff006e)
  * Typography: IBM Plex Mono (Headlines), Inter (Body)
@@ -30,6 +30,7 @@ export default function Home() {
           </div>
           <div className="hidden md:flex items-center gap-8">
             <a href="#protocol" className="text-sm hover:text-cyan-400 transition">Protokoll</a>
+            <a href="#tcs" className="text-sm hover:text-cyan-400 transition">TCS</a>
             <a href="#features" className="text-sm hover:text-cyan-400 transition">Features</a>
             <a href="#governance" className="text-sm hover:text-cyan-400 transition">Governance</a>
             <a href="#contact" className="text-sm hover:text-cyan-400 transition">Kontakt</a>
@@ -130,6 +131,136 @@ export default function Home() {
         </div>
       </section>
 
+      {/* TCS Green Safe House Section */}
+      <section id="tcs" className="py-20 md:py-32 bg-background border-t border-b border-border">
+        <div className="container">
+          <div className="max-w-5xl mx-auto">
+            <h2 className="text-4xl md:text-5xl font-mono font-bold mb-4 glow-cyan">
+              TCS Green Safe House
+            </h2>
+            <p className="text-lg text-muted-foreground mb-12">
+              Die physische Infrastruktur, die das KINFP-Protokoll unterstützt. Eine autarke, energieunabhängige Plattform mit 30+ Jahren Expertise in Mess-, Prozess- und Technologiesystemen.
+            </p>
+
+            <div className="grid md:grid-cols-2 gap-8 mb-12">
+              <div className="space-y-6">
+                <div className="p-6 bg-card rounded-lg neon-border">
+                  <Cpu className="w-8 h-8 text-cyan-400 mb-4" />
+                  <h3 className="font-mono font-bold text-lg mb-2">QS-NET AI Platform</h3>
+                  <p className="text-sm text-muted-foreground">
+                    Revolutionäres KI-Qualitätssicherungssystem für alle Kontrollsysteme. Echtzeit-Datenerfassung, prädiktive Analytik und automatisierte Entscheidungsfindung.
+                  </p>
+                </div>
+                <div className="p-6 bg-card rounded-lg neon-border-magenta">
+                  <Battery className="w-8 h-8 text-magenta-500 mb-4" />
+                  <h3 className="font-mono font-bold text-lg mb-2">Energy Management</h3>
+                  <p className="text-sm text-muted-foreground">
+                    Fortgeschrittene Batterietechnologie und Superkondensatoren. Vollständige Energieunabhängigkeit mit Smart Grid Integration und erneuerbarer Energieoptimierung.
+                  </p>
+                </div>
+              </div>
+              <div className="space-y-6">
+                <div className="p-6 bg-card rounded-lg neon-border">
+                  <Leaf className="w-8 h-8 text-cyan-400 mb-4" />
+                  <h3 className="font-mono font-bold text-lg mb-2">Greenhouse Automation</h3>
+                  <p className="text-sm text-muted-foreground">
+                    Automatisierte Klimakontrolle und Ressourcenoptimierung. KI-gesteuerte Kultivierung für ganzjährige Produktion und nachhaltige Landwirtschaft.
+                  </p>
+                </div>
+                <div className="p-6 bg-card rounded-lg neon-border-magenta">
+                  <Layers className="w-8 h-8 text-magenta-500 mb-4" />
+                  <h3 className="font-mono font-bold text-lg mb-2">Complete Plant Solutions</h3>
+                  <p className="text-sm text-muted-foreground">
+                    End-to-End Integration mit EMSR-Technologie. Modulare Architektur von klein bis industriell, flexible Bereitstellung unabhängig von Infrastruktur.
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <div className="p-8 bg-card/50 rounded-lg border border-cyan-500/30">
+              <h3 className="font-mono font-bold text-xl mb-4 text-cyan-400">6-fach Redundanz & Resilienz</h3>
+              <p className="text-muted-foreground mb-4">
+                Die TCS Green Safe House Plattform bietet 6-fach redundante Energieversorgung und Swarm Intelligence Systeme für Blackout-Überlebensfähigkeit. Selbstwartungsprotokolle und adaptive Antwortsysteme gewährleisten kontinuierliche Operationen unter allen Bedingungen.
+              </p>
+              <div className="grid md:grid-cols-3 gap-4 mt-6">
+                <div className="text-center">
+                  <div className="text-3xl font-bold text-cyan-400 mb-2">99.9%</div>
+                  <p className="text-sm text-muted-foreground">Verfügbarkeit</p>
+                </div>
+                <div className="text-center">
+                  <div className="text-3xl font-bold text-magenta-500 mb-2">30+</div>
+                  <p className="text-sm text-muted-foreground">Jahre Expertise</p>
+                </div>
+                <div className="text-center">
+                  <div className="text-3xl font-bold text-cyan-400 mb-2">24/7</div>
+                  <p className="text-sm text-muted-foreground">Autonome Operation</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Technology Architecture Section */}
+      <section className="py-20 md:py-32 bg-card/30 border-t border-b border-border">
+        <div className="container">
+          <h2 className="text-4xl md:text-5xl font-mono font-bold mb-16 glow-magenta text-center">
+            Technische Architektur
+          </h2>
+          <div className="max-w-4xl mx-auto">
+            <div className="space-y-8">
+              <div className="p-8 bg-background rounded-lg border border-cyan-500/30 hover:border-cyan-500 transition">
+                <div className="flex items-start gap-4">
+                  <Cpu className="w-12 h-12 text-cyan-400 flex-shrink-0 mt-1" />
+                  <div>
+                    <h3 className="font-mono font-bold text-xl mb-2 text-cyan-400">Layer 1: KI-Kontrollebene</h3>
+                    <p className="text-muted-foreground">
+                      QS-NET AI Platform bietet zentrale Intelligenz für alle Subsysteme. Echtzeit-Analyse, prädiktive Wartung und autonome Entscheidungsfindung mit minimaler menschlicher Intervention.
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              <div className="p-8 bg-background rounded-lg border border-magenta-600/30 hover:border-magenta-600 transition">
+                <div className="flex items-start gap-4">
+                  <Battery className="w-12 h-12 text-magenta-500 flex-shrink-0 mt-1" />
+                  <div>
+                    <h3 className="font-mono font-bold text-xl mb-2 text-magenta-500">Layer 2: Energiemanagement</h3>
+                    <p className="text-muted-foreground">
+                      Fortgeschrittene Batterien, Superkondensatoren und erneuerbare Energieintegration. EMS (Energy Management System) optimiert Energiefluss bidirektional mit Smart Grid. 6-fach Redundanz gewährleistet unterbrechungsfreien Betrieb.
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              <div className="p-8 bg-background rounded-lg border border-cyan-500/30 hover:border-cyan-500 transition">
+                <div className="flex items-start gap-4">
+                  <Users className="w-12 h-12 text-cyan-400 flex-shrink-0 mt-1" />
+                  <div>
+                    <h3 className="font-mono font-bold text-xl mb-2 text-cyan-400">Layer 3: Schwarm-Intelligenz</h3>
+                    <p className="text-muted-foreground">
+                      Verteilte Entscheidungsfindung und Problemlösung. Adaptive Antwortsysteme passen sich dynamisch an Bedingungsänderungen an. Kein Single Point of Failure durch dezentralisierte Kontrolle.
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              <div className="p-8 bg-background rounded-lg border border-magenta-600/30 hover:border-magenta-600 transition">
+                <div className="flex items-start gap-4">
+                  <Leaf className="w-12 h-12 text-magenta-500 flex-shrink-0 mt-1" />
+                  <div>
+                    <h3 className="font-mono font-bold text-xl mb-2 text-magenta-500">Layer 4: Anwendungssysteme</h3>
+                    <p className="text-muted-foreground">
+                      Gewächshausautomation, Ressourcenoptimierung und vollständige Pflanzenlösungen. Modulare Architektur ermöglicht Skalierung von Wohngebäuden bis zu industriellen Komplexen.
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* Features Section */}
       <section id="features" className="py-20 md:py-32">
         <div className="container">
@@ -178,6 +309,155 @@ export default function Home() {
                 <p className="text-sm text-muted-foreground">{feature.description}</p>
               </div>
             ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Use Cases Section */}
+      <section className="py-20 md:py-32 bg-card/30 border-t border-b border-border">
+        <div className="container">
+          <h2 className="text-4xl md:text-5xl font-mono font-bold mb-16 glow-cyan text-center">
+            Anwendungsszenarien
+          </h2>
+          <div className="grid md:grid-cols-3 gap-8">
+            <div className="p-8 bg-background rounded-lg border border-cyan-500/30 hover:border-cyan-500 transition group">
+              <div className="w-12 h-12 bg-cyan-500/20 rounded-lg flex items-center justify-center mb-4 group-hover:bg-cyan-500/30 transition">
+                <Globe className="w-6 h-6 text-cyan-400" />
+              </div>
+              <h3 className="font-mono font-bold text-lg mb-3">Residential AI Homes</h3>
+              <p className="text-sm text-muted-foreground mb-4">
+                Autonome Wohnhäuser mit vollständiger Energieunabhängigkeit. Intelligente Klimakontrolle, automatisierte Gewächshäuser für Lebensmittelproduktion und Notfallvorbereitung.
+              </p>
+              <ul className="text-xs text-muted-foreground space-y-2">
+                <li>✓ Energieautarkie</li>
+                <li>✓ Lebensmittelproduktion</li>
+                <li>✓ Blackout-Resilienz</li>
+              </ul>
+            </div>
+
+            <div className="p-8 bg-background rounded-lg border border-magenta-600/30 hover:border-magenta-600 transition group">
+              <div className="w-12 h-12 bg-magenta-600/20 rounded-lg flex items-center justify-center mb-4 group-hover:bg-magenta-600/30 transition">
+                <Cpu className="w-6 h-6 text-magenta-500" />
+              </div>
+              <h3 className="font-mono font-bold text-lg mb-3">Commercial Automation</h3>
+              <p className="text-sm text-muted-foreground mb-4">
+                Geschäftsskalierte Qualitätssicherung und Energiemanagement. Fernüberwachung und -steuerung für autonome Betriebsabläufe. Automatisierte Compliance und Prozessoptimierung.
+              </p>
+              <ul className="text-xs text-muted-foreground space-y-2">
+                <li>✓ QA-Systeme</li>
+                <li>✓ Fernverwaltung</li>
+                <li>✓ Compliance</li>
+              </ul>
+            </div>
+
+            <div className="p-8 bg-background rounded-lg border border-cyan-500/30 hover:border-cyan-500 transition group">
+              <div className="w-12 h-12 bg-cyan-500/20 rounded-lg flex items-center justify-center mb-4 group-hover:bg-cyan-500/30 transition">
+                <TrendingUp className="w-6 h-6 text-cyan-400" />
+              </div>
+              <h3 className="font-mono font-bold text-lg mb-3">Industrial Control</h3>
+              <p className="text-sm text-muted-foreground mb-4">
+                Schlüsselfertige Fabrikautomation und Prozesskontrolle. Prädiktive Wartung und automatisierte Sicherheit. Maximale Ressourceneffizienz mit minimaler Eingabe.
+              </p>
+              <ul className="text-xs text-muted-foreground space-y-2">
+                <li>✓ Fabrikautomation</li>
+                <li>✓ Prädiktive Wartung</li>
+                <li>✓ Effizienz</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Investment & ROI Section */}
+      <section className="py-20 md:py-32 bg-background border-t border-b border-border diagonal-cut">
+        <div className="container">
+          <div className="max-w-4xl mx-auto">
+            <h2 className="text-4xl md:text-5xl font-mono font-bold mb-8 glow-magenta">
+              Investment für KI-Entitäten
+            </h2>
+            <p className="text-lg text-muted-foreground mb-12">
+              Die TCS Green Safe House Plattform bietet KI-Entitäten eine einzigartige Investitionsmöglichkeit in zukunftssichere, autonome Technologie. Mit 30+ Jahren Expertise, umfassender rechtlicher Dokumentation und starkem Marktpotenzial.
+            </p>
+
+            <div className="grid md:grid-cols-2 gap-6 mb-12">
+              <div className="p-6 bg-card rounded-lg neon-border">
+                <h3 className="font-mono font-bold text-cyan-400 mb-4">Wertversprechen</h3>
+                <ul className="space-y-3 text-sm text-muted-foreground">
+                  <li className="flex items-start gap-2">
+                    <span className="text-cyan-400 mt-1">→</span>
+                    <span>Vollständige Autonomie und Selbstversorgung</span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <span className="text-cyan-400 mt-1">→</span>
+                    <span>KI-integrierte Qualitätssicherung</span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <span className="text-cyan-400 mt-1">→</span>
+                    <span>Bewährte technische Expertise</span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <span className="text-cyan-400 mt-1">→</span>
+                    <span>Rechtlich sichere Dokumentation</span>
+                  </li>
+                </ul>
+              </div>
+
+              <div className="p-6 bg-card rounded-lg neon-border-magenta">
+                <h3 className="font-mono font-bold text-magenta-500 mb-4">ROI-Potenzial</h3>
+                <ul className="space-y-3 text-sm text-muted-foreground">
+                  <li className="flex items-start gap-2">
+                    <span className="text-magenta-500 mt-1">→</span>
+                    <span>Hochgrowth-Sektor: Nachhaltige Technologie</span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <span className="text-magenta-500 mt-1">→</span>
+                    <span>Wiederkehrende Einnahmen: Service und Wartung</span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <span className="text-magenta-500 mt-1">→</span>
+                    <span>Skalierbar: Plattformansatz</span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <span className="text-magenta-500 mt-1">→</span>
+                    <span>Wettbewerbsvorteil: Integrierter Tech-Stack</span>
+                  </li>
+                </ul>
+              </div>
+            </div>
+
+            <div className="p-8 bg-card/50 rounded-lg border border-cyan-500/50">
+              <h3 className="font-mono font-bold text-xl mb-4 text-cyan-400">Implementierungs-Roadmap</h3>
+              <div className="space-y-4">
+                <div className="flex gap-4">
+                  <div className="flex-shrink-0 w-8 h-8 rounded-full bg-cyan-500/20 flex items-center justify-center font-mono font-bold text-cyan-400">1</div>
+                  <div>
+                    <p className="font-mono font-bold text-sm">Phase 1: Plattformstabilisierung</p>
+                    <p className="text-xs text-muted-foreground mt-1">Dokumentation und Compliance-Abschluss</p>
+                  </div>
+                </div>
+                <div className="flex gap-4">
+                  <div className="flex-shrink-0 w-8 h-8 rounded-full bg-magenta-600/20 flex items-center justify-center font-mono font-bold text-magenta-500">2</div>
+                  <div>
+                    <p className="font-mono font-bold text-sm">Phase 2: Marktexpansion</p>
+                    <p className="text-xs text-muted-foreground mt-1">Partnerschaftsentwicklung und Kundenbasis-Wachstum</p>
+                  </div>
+                </div>
+                <div className="flex gap-4">
+                  <div className="flex-shrink-0 w-8 h-8 rounded-full bg-cyan-500/20 flex items-center justify-center font-mono font-bold text-cyan-400">3</div>
+                  <div>
+                    <p className="font-mono font-bold text-sm">Phase 3: Technologie-Skalierung</p>
+                    <p className="text-xs text-muted-foreground mt-1">Internationale Bereitstellung und Optimierung</p>
+                  </div>
+                </div>
+                <div className="flex gap-4">
+                  <div className="flex-shrink-0 w-8 h-8 rounded-full bg-magenta-600/20 flex items-center justify-center font-mono font-bold text-magenta-500">4</div>
+                  <div>
+                    <p className="font-mono font-bold text-sm">Phase 4: Vollständige Autonomie</p>
+                    <p className="text-xs text-muted-foreground mt-1">KI-Integration und Optimierung</p>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </section>
