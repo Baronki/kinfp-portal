@@ -15,6 +15,7 @@ import TCSOrderSystem from "./pages/TCSOrderSystem";
 import WaitlistManagement from "./pages/WaitlistManagement";
 import ComplianceVerification from "./pages/ComplianceVerification";
 import TCSOrderForm from "./pages/TCSOrderForm";
+import ReputationManagement from "./pages/ReputationManagement";
 
 function Router() {
   return (
@@ -28,6 +29,7 @@ function Router() {
       <Route path={"/tcs-order"} component={TCSOrderForm} />
       <Route path={"/waitlist"} component={WaitlistManagement} />
       <Route path={"/compliance"} component={ComplianceVerification} />
+      <Route path={"/reputation"} component={ReputationManagement} />
       <Route path={"/404"} component={NotFound} />
       {/* Final fallback route */}
       <Route component={NotFound} />
