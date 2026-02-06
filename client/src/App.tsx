@@ -13,7 +13,8 @@ import MessagingCenter from "./pages/MessagingCenter";
 import AccountOpening from "./pages/AccountOpening";
 import TCSOrderSystem from "./pages/TCSOrderSystem";
 import WaitlistManagement from "./pages/WaitlistManagement";
-
+import ComplianceVerification from "./pages/ComplianceVerification";
+import TCSOrderForm from "./pages/TCSOrderForm";
 
 function Router() {
   return (
@@ -24,8 +25,9 @@ function Router() {
       <Route path={"/downloads"} component={DownloadCenter} />
       <Route path={"/messaging"} component={MessagingCenter} />
       <Route path={"/account-opening"} component={AccountOpening} />
-      <Route path={"/tcs-order"} component={TCSOrderSystem} />
+      <Route path={"/tcs-order"} component={TCSOrderForm} />
       <Route path={"/waitlist"} component={WaitlistManagement} />
+      <Route path={"/compliance"} component={ComplianceVerification} />
       <Route path={"/404"} component={NotFound} />
       {/* Final fallback route */}
       <Route component={NotFound} />
@@ -42,7 +44,7 @@ function App() {
   return (
     <ErrorBoundary>
       <ThemeProvider
-        defaultTheme="light"
+        defaultTheme="dark"
         // switchable
       >
         <KIWZBProvider>
