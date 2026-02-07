@@ -1,6 +1,7 @@
 /**
  * WebSocket Service for Real-time Updates
  * Handles connection management, event subscriptions, and automatic reconnection
+ * Falls back to demo mode if backend is unavailable
  */
 
 export type NotificationType = 'order_status' | 'investment_update' | 'account_activity' | 'payment_confirmation' | 'system_alert';
@@ -25,11 +26,13 @@ class WebSocketService {
   private ws: WebSocket | null = null;
   private url: string;
   private reconnectAttempts = 0;
-  private maxReconnectAttempts = 5;
+  private maxReconnectAttempts = 3;
   private reconnectDelay = 3000;
   private listeners: Map<string, Set<(data: any) => void>> = new Map();
   private isConnecting = false;
   private heartbeatInterval: NodeJS.Timeout | null = null;
+  private isOfflineMode = false;
+  private connectionTimeout: NodeJS.Timeout | null = null;
 
   constructor() {
     const wsProtocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
@@ -38,11 +41,18 @@ class WebSocketService {
   }
 
   /**
-   * Connect to WebSocket server
+   * Connect to WebSocket server with timeout
    */
   connect(): Promise<void> {
-    return new Promise((resolve, reject) => {
+    return new Promise((resolve) => {
       if (this.isConnecting || this.ws?.readyState === WebSocket.OPEN) {
+        resolve();
+        return;
+      }
+
+      // If already in offline mode, skip connection attempts
+      if (this.isOfflineMode && this.reconnectAttempts >= this.maxReconnectAttempts) {
+        this.emit('offline_mode', { timestamp: Date.now() });
         resolve();
         return;
       }
@@ -52,9 +62,20 @@ class WebSocketService {
       try {
         this.ws = new WebSocket(this.url);
 
+        // Set connection timeout
+        this.connectionTimeout = setTimeout(() => {
+          if (this.ws?.readyState === WebSocket.CONNECTING) {
+            console.warn('WebSocket connection timeout - entering offline mode');
+            this.ws?.close();
+            this.handleOfflineMode(resolve);
+          }
+        }, 5000);
+
         this.ws.onopen = () => {
+          if (this.connectionTimeout) clearTimeout(this.connectionTimeout);
           console.log('WebSocket connected');
           this.isConnecting = false;
+          this.isOfflineMode = false;
           this.reconnectAttempts = 0;
           this.startHeartbeat();
           this.emit('connected', { timestamp: Date.now() });
@@ -71,23 +92,39 @@ class WebSocketService {
         };
 
         this.ws.onerror = (error) => {
-          console.error('WebSocket error:', error);
+          if (this.connectionTimeout) clearTimeout(this.connectionTimeout);
+          console.warn('WebSocket error - entering offline mode:', error);
           this.isConnecting = false;
-          reject(error);
+          this.handleOfflineMode(resolve);
         };
 
         this.ws.onclose = () => {
+          if (this.connectionTimeout) clearTimeout(this.connectionTimeout);
           console.log('WebSocket disconnected');
           this.isConnecting = false;
           this.stopHeartbeat();
           this.emit('disconnected', { timestamp: Date.now() });
-          this.attemptReconnect();
+          this.attemptReconnect(resolve);
         };
       } catch (error) {
+        if (this.connectionTimeout) clearTimeout(this.connectionTimeout);
+        console.warn('WebSocket creation error - entering offline mode:', error);
         this.isConnecting = false;
-        reject(error);
+        this.handleOfflineMode(resolve);
       }
     });
+  }
+
+  /**
+   * Handle offline mode (graceful degradation)
+   */
+  private handleOfflineMode(resolve: () => void): void {
+    this.isOfflineMode = true;
+    this.emit('offline_mode', {
+      timestamp: Date.now(),
+      message: 'Backend nicht erreichbar - Demo-Modus aktiv',
+    });
+    resolve();
   }
 
   /**
@@ -95,6 +132,7 @@ class WebSocketService {
    */
   disconnect(): void {
     this.stopHeartbeat();
+    if (this.connectionTimeout) clearTimeout(this.connectionTimeout);
     if (this.ws) {
       this.ws.close();
       this.ws = null;
@@ -105,8 +143,14 @@ class WebSocketService {
    * Send message to server
    */
   send(type: string, payload: any): void {
+    if (this.isOfflineMode) {
+      console.warn('Offline mode - message not sent:', type);
+      return;
+    }
+
     if (!this.ws || this.ws.readyState !== WebSocket.OPEN) {
-      console.warn('WebSocket not connected');
+      console.warn('WebSocket not connected - message queued:', type);
+      // In a real app, we would queue messages here
       return;
     }
 
@@ -197,21 +241,21 @@ class WebSocketService {
   /**
    * Attempt to reconnect
    */
-  private attemptReconnect(): void {
+  private attemptReconnect(resolve: () => void): void {
     if (this.reconnectAttempts >= this.maxReconnectAttempts) {
-      console.error('Max reconnection attempts reached');
-      this.emit('reconnect_failed', { attempts: this.reconnectAttempts });
+      console.warn('Max reconnection attempts reached - entering offline mode');
+      this.handleOfflineMode(resolve);
       return;
     }
 
     this.reconnectAttempts++;
     const delay = this.reconnectDelay * Math.pow(2, this.reconnectAttempts - 1);
 
-    console.log(`Attempting to reconnect in ${delay}ms (attempt ${this.reconnectAttempts})`);
+    console.log(`Attempting to reconnect in ${delay}ms (attempt ${this.reconnectAttempts}/${this.maxReconnectAttempts})`);
 
     setTimeout(() => {
       this.connect().catch((error) => {
-        console.error('Reconnection failed:', error);
+        console.warn('Reconnection failed:', error);
       });
     }, delay);
   }
@@ -242,6 +286,13 @@ class WebSocketService {
    */
   isConnected(): boolean {
     return this.ws?.readyState === WebSocket.OPEN;
+  }
+
+  /**
+   * Get offline mode status
+   */
+  isOffline(): boolean {
+    return this.isOfflineMode;
   }
 
   /**

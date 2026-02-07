@@ -75,8 +75,9 @@ export function NotificationProvider({ children }: { children: React.ReactNode }
       toast.warning('Verbindung unterbrochen', { description: 'Versuche zu reconnectieren...' });
     });
 
-    const unsubscribeReconnectFailed = websocketService.on('reconnect_failed', () => {
-      toast.error('Verbindung fehlgeschlagen', { description: 'Bitte aktualisieren Sie die Seite' });
+    const unsubscribeOfflineMode = websocketService.on('offline_mode', () => {
+      setIsConnected(false);
+      toast.info('Demo-Modus', { description: 'Backend nicht erreichbar - Demo-Funktionalität aktiv' });
     });
 
     // Cleanup
@@ -84,7 +85,7 @@ export function NotificationProvider({ children }: { children: React.ReactNode }
       unsubscribeNotification();
       unsubscribeConnected();
       unsubscribeDisconnected();
-      unsubscribeReconnectFailed();
+      unsubscribeOfflineMode();
       websocketService.disconnect();
     };
   }, [addNotification]);

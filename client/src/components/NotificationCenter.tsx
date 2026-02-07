@@ -43,7 +43,7 @@ export default function NotificationCenter() {
         className={`flex items-center gap-2 px-4 py-2 rounded-lg border text-sm font-mono ${
           isConnected
             ? 'bg-green-500/10 border-green-500/30 text-green-300'
-            : 'bg-red-500/10 border-red-500/30 text-red-300'
+            : 'bg-yellow-500/10 border-yellow-500/30 text-yellow-300'
         }`}
       >
         {isConnected ? (
@@ -54,7 +54,7 @@ export default function NotificationCenter() {
         ) : (
           <>
             <WifiOff className="w-4 h-4" />
-            <span>Offline - Verbindung wird hergestellt...</span>
+            <span>Demo-Modus - Backend nicht erreichbar</span>
           </>
         )}
       </div>
