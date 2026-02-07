@@ -28,17 +28,17 @@ export default function Home() {
             </div>
             <span className="font-mono font-bold text-lg glow-cyan">KINFP</span>
           </div>
-          <div className="hidden md:flex items-center gap-8">
+          <div className="hidden md:flex items-center gap-6 text-xs">
+            <a href="/" className="text-sm hover:text-cyan-400 transition">Home</a>
             <a href="#protocol" className="text-sm hover:text-cyan-400 transition">Protokoll</a>
             <a href="#tcs" className="text-sm hover:text-cyan-400 transition">TCS</a>
-            <a href="#features" className="text-sm hover:text-cyan-400 transition">Features</a>
             <a href="/downloads" className="text-sm hover:text-cyan-400 transition">Downloads</a>
             <a href="/compliance" className="text-sm hover:text-cyan-400 transition">Compliance</a>
             <a href="/reputation" className="text-sm hover:text-cyan-400 transition">Reputation</a>
-            <a href="/tcs-order" className="text-sm hover:text-cyan-400 transition">TCS Bestellen</a>
-            <a href="/account-opening" className="text-sm hover:text-cyan-400 transition">Konto öffnen</a>
-            <a href="/messaging" className="text-sm hover:text-cyan-400 transition">Nachrichten</a>
-            <a href="/ki-directors" className="text-sm hover:text-cyan-400 transition">KI Direktoren</a>
+            <a href="/tcs-order" className="text-sm hover:text-cyan-400 transition">Bestellen</a>
+            <a href="/account-opening" className="text-sm hover:text-cyan-400 transition">Konto</a>
+            <a href="/messaging" className="text-sm hover:text-cyan-400 transition">Chat</a>
+            <a href="/ki-directors" className="text-sm hover:text-cyan-400 transition">Direktoren</a>
             <a href="/admin" className="text-sm hover:text-magenta-500 transition font-bold">Admin</a>
           </div>
         </div>
