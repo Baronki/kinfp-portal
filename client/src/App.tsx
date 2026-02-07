@@ -5,6 +5,8 @@ import { Route, Switch } from "wouter";
 import ErrorBoundary from "./components/ErrorBoundary";
 import { ThemeProvider } from "./contexts/ThemeContext";
 import { KIWZBProvider } from "./contexts/KIWZBContext";
+import { NotificationProvider } from "./contexts/NotificationContext";
+import NotificationCenter from "./components/NotificationCenter";
 import Home from "./pages/Home";
 import AdminDashboard from "./pages/AdminDashboard";
 import KIAgentProfiles from "./pages/KIAgentProfiles";
@@ -49,12 +51,13 @@ function App() {
         defaultTheme="dark"
         // switchable
       >
-        <KIWZBProvider>
+        <NotificationProvider>
           <TooltipProvider>
             <Toaster />
             <Router />
+            <NotificationCenter />
           </TooltipProvider>
-        </KIWZBProvider>
+        </NotificationProvider>
       </ThemeProvider>
     </ErrorBoundary>
   );
