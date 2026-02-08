@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { TrendingUp, AlertCircle, CheckCircle, Activity, Users, DollarSign, Package, Zap } from "lucide-react";
 import { useState, useEffect } from "react";
 import { LineChart, Line, BarChart, Bar, PieChart, Pie, Cell, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from "recharts";
-import { analyticsService, AnalyticsDashboard } from "@/lib/analytics-service";
+import { analyticsService, type AnalyticsDashboard as AnalyticsDashboardData } from "@/lib/analytics-service";
 
 /**
  * Analytics Dashboard
@@ -11,7 +11,7 @@ import { analyticsService, AnalyticsDashboard } from "@/lib/analytics-service";
  */
 
 export default function AnalyticsDashboard() {
-  const [data, setData] = useState<AnalyticsDashboard | null>(null);
+  const [data, setData] = useState<AnalyticsDashboardData | null>(null);
   const [refreshInterval, setRefreshInterval] = useState(5000);
 
   useEffect(() => {
