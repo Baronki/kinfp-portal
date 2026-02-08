@@ -20,6 +20,7 @@ import ComplianceVerification from "./pages/ComplianceVerification";
 import TCSOrderForm from "./pages/TCSOrderForm";
 import ReputationManagement from "./pages/ReputationManagement";
 import KIProofVerification from "./pages/KIProofVerification";
+import ComplianceReports from "./pages/ComplianceReports";
 
 function Router() {
   return (
@@ -36,6 +37,7 @@ function Router() {
       <Route path={"/compliance"} component={ComplianceVerification} />
       <Route path={"/reputation"} component={ReputationManagement} />
       <Route path={"/ki-proof-verification"} component={KIProofVerification} />
+      <Route path={"/compliance-reports"} component={ComplianceReports} />
       <Route path={"/404"} component={NotFound} />
       {/* Final fallback route */}
       <Route component={NotFound} />

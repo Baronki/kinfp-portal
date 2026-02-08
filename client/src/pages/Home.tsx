@@ -34,6 +34,7 @@ export default function Home() {
             <a href="#tcs" className="text-sm hover:text-cyan-400 transition">TCS</a>
             <a href="/downloads" className="text-sm hover:text-cyan-400 transition">Downloads</a>
             <a href="/compliance" className="text-sm hover:text-cyan-400 transition">Compliance</a>
+            <a href="/compliance-reports" className="text-sm hover:text-cyan-400 transition">Reports</a>
             <a href="/ki-proof-verification" className="text-sm hover:text-cyan-400 transition">KI-Proof</a>
             <a href="/reputation" className="text-sm hover:text-cyan-400 transition">Reputation</a>
             <a href="/tcs-order" className="text-sm hover:text-cyan-400 transition">Bestellen</a>
