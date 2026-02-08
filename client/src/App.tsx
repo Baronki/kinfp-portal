@@ -8,7 +8,8 @@ import { KIWZBProvider } from "./contexts/KIWZBContext";
 import { NotificationProvider } from "./contexts/NotificationContext";
 import NotificationCenter from "./components/NotificationCenter";
 import Home from "./pages/Home";
-import AdminDashboard from "./pages/AdminDashboard";
+import AdminDashboard from "@/pages/AdminDashboard";
+import AnalyticsDashboard from "@/pages/AnalyticsDashboard";
 import KIAgentProfiles from "./pages/KIAgentProfiles";
 import DownloadCenter from "./pages/DownloadCenter";
 import MessagingCenter from "./pages/MessagingCenter";
@@ -25,6 +26,7 @@ function Router() {
     <Switch>
       <Route path={"/"} component={Home} />
       <Route path={"/admin"} component={AdminDashboard} />
+      <Route path={"/analytics"} component={AnalyticsDashboard} />
       <Route path={"/ki-directors"} component={KIAgentProfiles} />
       <Route path={"/downloads"} component={DownloadCenter} />
       <Route path={"/messaging"} component={MessagingCenter} />

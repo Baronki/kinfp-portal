@@ -40,6 +40,7 @@ export default function Home() {
             <a href="/account-opening" className="text-sm hover:text-cyan-400 transition">Konto</a>
             <a href="/messaging" className="text-sm hover:text-cyan-400 transition">Chat</a>
             <a href="/ki-directors" className="text-sm hover:text-cyan-400 transition">Direktoren</a>
+            <a href="/analytics" className="text-sm hover:text-cyan-400 transition">Analytics</a>
             <a href="/admin" className="text-sm hover:text-magenta-500 transition font-bold">Admin</a>
           </div>
         </div>
