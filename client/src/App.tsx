@@ -20,10 +20,11 @@ import Transparency from '@/pages/Transparency';
 import TCSGreenSafeHouse from '@/pages/TCSGreenSafeHouse';
 import KIProofVerification from "./pages/KIProofVerification";
 import ComplianceReports from "./pages/ComplianceReports";
+import FileManager from "./pages/FileManager";
 import { KIWZBProvider } from "./contexts/KIWZBContext";
 import { NotificationProvider } from "./contexts/NotificationContext";
-
 function Router() {
+  // make sure to consider if you need authentication for certain routes
   return (
     <Switch>
       <Route path={"/"} component={Home} />
@@ -38,6 +39,7 @@ function Router() {
       <Route path="/tcs-green-safehouse" component={TCSGreenSafeHouse} />
       <Route path="/ki-proof" component={KIProofVerification} />
       <Route path={"/compliance-reports"} component={ComplianceReports} />
+      <Route path={"/files"} component={FileManager} />
       <Route path={"/admin"} component={AdminDashboard} />
       <Route path={"/ki-directors"} component={KIAgentProfiles} />
       <Route path={"/analytics"} component={AnalyticsDashboard} />
